@@ -68,7 +68,7 @@
       </fieldset>
     </form>
 
-    <section id="error-btns">
+    <!--section id="error-btns">
       <button>Console Log</button>
       <button>Console Error</button>
       <button>Console Count</button>
@@ -84,10 +84,26 @@
       <button>End Timer</button>
       <button>Console Trace</button>
       <button>Trigger a Global Error</button>
-    </section>
+    </section-->
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "ddcd51e929074b28afdfd6bc0f7a982b"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                        
+  <script>
+    
+    class NoHTMLElementError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = 'NoHTMLElementError';
+      }
+    }
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -102,6 +118,115 @@
 
     // Start your code here
     // You may move this JS to another file if you wish
+    try {
+      var buttons = document.getElementById('error-btns').children;
+    } catch (error) {
+      console.error('Could not access button list: ' + error);
+      console.error('Attempting to create button list...');
+      let main = document.querySelector('main');
+      var buttons = document.createElement('section');
+      main.appendChild(buttons);
+      buttons.setAttribute('id', "error-btns");
+      buttons.innerHTML = `
+        <button>Console Log</button>
+        <button>Console Error</button>
+        <button>Console Count</button>
+        <button>Console Warn</button>
+        <button>Console Assert</button>
+        <button>Console Clear</button>
+        <button>Console Dir</button>
+        <button>Console dirxml</button>
+        <button>Console Group Start</button>
+        <button>Console Group End</button>
+        <button>Console Table</button>
+        <button>Start Timer</button>
+        <button>End Timer</button>
+        <button>Console Trace</button>
+        <button>Trigger a Global Error</button>
+      `;
+      buttons = buttons.children;
+    } finally {
+      if (buttons === undefined) {
+        throw new NoHTMLElementError('Could not create button list, aborting');
+      }
+    }
+    var output = document.querySelector('output');
+    var operator = document.querySelector('#operator');
+
+    //Console log
+    buttons[0].addEventListener('click', () => {
+      console.log(output.innerHTML);
+    });
+
+    //Console error
+    buttons[1].addEventListener('click', () => {
+      console.error(output.innerHTML);
+    });
+
+    //Console count
+    buttons[2].addEventListener('click', () => {
+      console.count();
+    });
+
+    //Console warn
+    buttons[3].addEventListener('click', () => {
+      console.warn(output.innerHTML);
+    });
+
+    //Console assert
+    buttons[4].addEventListener('click', () => {
+      console.assert(operator.value == '+', output.innerHTML);
+    });
+
+    //Console clear
+    buttons[5].addEventListener('click', () => {
+      console.clear();
+    });
+
+    //Console dir
+    buttons[6].addEventListener('click', () => {
+      console.dir(document.querySelector('form'));
+    });
+
+    //Console dirxml
+    buttons[7].addEventListener('click', () => {
+      console.dirxml(document.querySelector('form'));
+    });
+
+    //Console group start
+    buttons[8].addEventListener('click', () => {
+      console.group();
+    });
+
+    //Console group end
+    buttons[9].addEventListener('click', () => {
+      console.groupEnd();
+    });
+
+    //Console table
+    buttons[10].addEventListener('click', () => {
+      console.table(buttons);
+    });
+
+    //Console start timer
+    buttons[11].addEventListener('click', () => {
+      console.time('test');
+    });
+
+    //Console end timer
+    buttons[12].addEventListener('click', () => {
+      console.timeEnd('test');
+    });
+
+    //Console trace
+    buttons[13].addEventListener('click', () => {
+      console.trace(buttons, output, operator);
+    });
+
+    //Console global error
+    buttons[14].addEventListener('click', () => {
+      undefinedFunc();
+    });
   </script>
 </body>
 
